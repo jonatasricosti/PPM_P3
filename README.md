@@ -1,0 +1,3 @@
+Aqui tem o código em C++ pra criar uma arquivo de imagem ppm p3, não só isso vamos criar varias funções pra desenhar coisas nesse arquivo de imagem como se ele fosse uma janela gráfica, ou seja, vamos criar funções pra desenhar pixel, linha, triângulo, retângulo, cíngulo, texto, imagem, e ate modelos 3d, ou seja, ao invés de desenhar essas coisas em uma janela gráfica vamos desenhar em um arquivo ppm p3 pra entender computação gráfica.
+
+Vamos também criar funções pra inverter a imagem rotacionar desenhar imagem cortada etc...
