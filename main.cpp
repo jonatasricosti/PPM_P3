@@ -2,6 +2,7 @@
 #include <sstream> // pra usar stringstream
 #include <string> // pra usar string
 #include <math.h> // pra usar abs
+#include <iostream> // pra usar cout
 using namespace std;
 
 string FileType = "P3";	
@@ -38,10 +39,56 @@ string rgb24Todecimal(int color)
 int vram[image_width*image_height];
 
 // use essa função pra desenhar um pixel
+// Nota: esse código foi portado do game boy advance
 void DrawPixel(int x, int y, int color)
 {
 	vram[x+y*image_width] = color;
 }
+
+#include "font.h"
+// use essa função pra desenhar um caractere no mode 3 precisa de font.h e só tem letras maiúsculas
+// Nota: esse código foi portado do game boy advance
+void DrawCharMode3(int left, int top, char letter, int color)
+{
+	int draw = 0;
+	
+	for(int y = 0; y < 8; y++)
+	{
+		for(int x = 0; x < 8; x++)
+		{
+			// pegue um pixel do font char
+			draw = font[ (letter-32)*64 + x+8*y];
+			
+			// se pixer = 1, então desenhe
+			if(draw == 1)
+			{
+				DrawPixel(left + x, top + y, color);
+			}
+		}
+	}
+}
+
+// use essa função pra desenhar um texto no mode 3 precisa de font.h e só tem letras maiúsculas
+// Nota: esse código foi portado do game boy advance
+void DrawTextMode3(int left, int top, char *text, unsigned short color)
+{
+	int pos = 0;
+	while(*text)
+	{
+		DrawCharMode3(left+pos,top,*text++,color);
+		pos = pos+8;
+	}
+}
+
+// use essa função para desenhar um pixel utilizando o sistema de coordenadas cartesianas.
+void DrawPixelCartesian(int x, int y, int color)
+{
+	int screen_x = x+image_width/2;
+	int screen_y = image_height/2-y;
+	
+	DrawPixel(screen_x,screen_y,color);
+}
+
 
 // Bresenham's infamous line algorithm
 // use essa função pra desenhar uma linha
@@ -118,7 +165,7 @@ void DrawLine(int x1, int y1, int x2, int y2, int color)
 }
 
 // use essa função pra desenhar um triângulo
-void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3,int color)
+void DrawTriangle(int x1, int y1, int x2, int y2, int x3, int y3, int color)
 {
 	DrawLine(x1, y1, x2, y2, color);
 	DrawLine(x2, y2, x3, y3, color);
@@ -207,8 +254,10 @@ void CreatImagePP3()
 	DrawLine(50,250,200,350,0);                        // Linha parte inferior esquerda
 	DrawTriangle(300,250,450,250,375,150,0xff);        // Triângulo parte inferior direita
 	DrawCircle(540,200,80,0xff00ff);                   // Círculo mais à direita
+	DrawPixelCartesian(-100,0,RGB24(120,52,255));
+	DrawCharMode3(400,300,'J',RGB24(255,255,0));
+	DrawTextMode3(30,400,"PROGRAMAR EM C++ EH LEGAL", RGB24(200,0,150));
 
-	
 	for(int i = 0; i < image_width*image_height; i++)
 	{
 		escreva << rgb24Todecimal(vram[i]);		
@@ -222,5 +271,8 @@ int main()
 
 CreatImagePP3();
 
+cout << "Foi criado um arquivo chamado text.ppm" << endl;
+
+system("pause");
 return 0;
 }
